@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
-import _judger
+import sandbox
 import signal
 import shutil
 import os
@@ -20,42 +20,42 @@ class SeccompTest(base.BaseTestCase):
         config = self.base_config
         config["exe_path"] = self._compile_c("fork.c")
         config["output_path"] = config["error_path"] = self.output_path()
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
 
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_execve(self):
         config = self.base_config
         config["exe_path"] = self._compile_c("execve.c")
         config["output_path"] = config["error_path"] = self.output_path()
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         self.assertEqual("Helloworld\n", self.output_content(config["output_path"]))
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_write_file_using_open(self):
@@ -64,21 +64,21 @@ class SeccompTest(base.BaseTestCase):
         config["output_path"] = config["error_path"] = self.output_path()
         path = os.path.join(self.workspace, "file1.txt")
         config["args"] = [path, "w"]
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         self.assertEqual("", self.output_content(path))
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_read_write_file_using_open(self):
@@ -87,21 +87,21 @@ class SeccompTest(base.BaseTestCase):
         config["output_path"] = config["error_path"] = self.output_path()
         path = os.path.join(self.workspace, "file2.txt")
         config["args"] = [path, "w+"]
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         self.assertEqual("", self.output_content(path))
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_write_file_using_openat(self):
@@ -110,21 +110,21 @@ class SeccompTest(base.BaseTestCase):
         config["output_path"] = config["error_path"] = self.output_path()
         path = os.path.join(self.workspace, "file3.txt")
         config["args"] = [path, "w"]
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         self.assertEqual("", self.output_content(path))
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_read_write_file_using_openat(self):
@@ -133,42 +133,42 @@ class SeccompTest(base.BaseTestCase):
         config["output_path"] = config["error_path"] = self.output_path()
         path = os.path.join(self.workspace, "file4.txt")
         config["args"] = [path, "w+"]
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         # without seccomp
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         self.assertEqual("", self.output_content(path))
 
         # with general seccomp
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
         # with c_cpp seccomp
         config["seccomp_rule_name"] = "c_cpp"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
 
     def test_sysinfo(self):
         config = self.base_config
         config["exe_path"] = self._compile_c("sysinfo.c")
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
 
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
 
     def test_exceveat(self):
         config = self.base_config
         config["exe_path"] = self._compile_c("execveat.c")
         config["output_path"] = config["error_path"] = self.output_path()
-        result = _judger.run(**config)
+        result = sandbox.run(**config)
         if "syscall not found" in self.output_content(config["output_path"]):
             print("execveat syscall not found, test ignored")
             return
-        self.assertEqual(result["result"], _judger.RESULT_SUCCESS)
+        self.assertEqual(result["result"], sandbox.RESULT_SUCCESS)
         
         # with general seccomp 
         config["seccomp_rule_name"] = "general"
-        result = _judger.run(**config)
-        self.assertEqual(result["result"], _judger.RESULT_RUNTIME_ERROR)
+        result = sandbox.run(**config)
+        self.assertEqual(result["result"], sandbox.RESULT_RUNTIME_ERROR)
         self.assertEqual(result["signal"], self.BAD_SYSTEM_CALL)
